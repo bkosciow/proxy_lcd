@@ -12,7 +12,7 @@ from model.display import Display
 class Config(object):
     filters = {'name', 'can_stream', 'node_name'}
 
-    def __init__(self, file="settings.ini"):
+    def __init__(self, file="config/settings.ini"):
         self.config = ConfigParser()
         self.config.read(file)
         self.node_name = self.config.get("general", "node_name")
