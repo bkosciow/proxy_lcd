@@ -32,7 +32,7 @@ class Config(object):
         if not self.config.has_section('general'):
             self.config.add_section('general')
             self.config.set('general', 'node_name', 'new')
-            self.config.set('general', 'broadcast_ip', '')
+            self.config.set('general', 'broadcast_ip', '<broadcast>')
             self.config.set('general', 'broadcast_port', '5053')
             self.config.set('general', 'server_port', '5054')
             self.save_config()
