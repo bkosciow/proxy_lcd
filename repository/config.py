@@ -13,8 +13,10 @@ class Config(object):
     filters = {'name', 'can_stream', 'node_name'}
 
     def __init__(self, file="config/settings.ini"):
+        self.file = file
         self.config = ConfigParser()
         self.config.read(file)
+        self.validate_config_file()
         self.node_name = self.config.get("general", "node_name")
         self.msg = message.Message(self.node_name)
         self.broadcast_ip = self.config.get("general", "broadcast_ip")
@@ -23,8 +25,17 @@ class Config(object):
             self.broadcast_ip = '<broadcast>'
         self.broadcast_port = int(self.config.get("general", "broadcast_port"))
         self.displays = []
-        self.file = file
         self.load_lcd()
+
+    def validate_config_file(self):
+        """recreate general section if not found"""
+        if not self.config.has_section('general'):
+            self.config.add_section('general')
+            self.config.set('general', 'node_name', 'new')
+            self.config.set('general', 'broadcast_ip', '')
+            self.config.set('general', 'broadcast_port', '5053')
+            self.config.set('general', 'server_port', '5054')
+            self.save_config()
 
     def load_lcd(self):
         """finds lcd's section"""
