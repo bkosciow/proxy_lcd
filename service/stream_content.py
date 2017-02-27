@@ -14,6 +14,7 @@ class StreamContent(object):
         """send content to display"""
         content = content.strip()
         message = self._decode(content)
+        print(type(message))
         if message and 'target' in message:
             self._send_message_to_node(message)
         else:
@@ -23,6 +24,8 @@ class StreamContent(object):
         """decode content to message"""
         try:
             message = json.loads(content)
+            if type(message) != dict:
+                message = None
         except ValueError:
             message = None
 
