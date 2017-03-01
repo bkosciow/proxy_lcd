@@ -1,0 +1,10 @@
+version: "2.1"
+services:
+  proxylcd:
+    build: .
+    volumes:
+      - ./config:/app/proxy_lcd-master/config
+    ports:
+      - "5054:5054"
+      - "5053:5053/udp"
+    network_mode: "host"
