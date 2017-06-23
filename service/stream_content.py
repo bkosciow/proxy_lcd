@@ -8,15 +8,14 @@ import json
 class StreamContent(object):
     def __init__(self, lcd_repository):
         self.lcd_repository = lcd_repository
-        SIGNALS['stream'].state.connect(self.stream)
+        SIGNALS['stream'].state.connect(self.handle_stream)
 
-    def stream(self, content):
+    def handle_stream(self, content):
         """send content to display"""
         content = content.strip()
         message = self._decode(content)
-        print(type(message))
-        if message and 'target' in message:
-            self._send_message_to_node(message)
+        if message and 'protocol' in message and message['protocol'] == 'proxylcd':
+            self._handle_command(message)
         else:
             self._send_stream(content)
 
@@ -42,3 +41,16 @@ class StreamContent(object):
         displays = self.lcd_repository.find({'node_name': message['target']})
         for display in displays:
             display.stream(message['content'])
+
+    def _handle_command(self, command):
+        """handle a message"""
+        if 'command' not in command:
+            return
+
+        if command['command'] == 'clear':
+            displays = self.lcd_repository.find({'can_stream': True})
+            for display in displays:
+                display.lcd.buffer_clear()
+                display.lcd.set_xy(0, 0)
+
+
