@@ -6,8 +6,9 @@ import json
 
 
 class StreamContent(object):
-    def __init__(self, lcd_repository):
+    def __init__(self, lcd_repository, formatter):
         self.lcd_repository = lcd_repository
+        self.formatter = formatter
         SIGNALS['stream'].state.connect(self.handle_stream)
 
     def handle_stream(self, content):
@@ -33,8 +34,10 @@ class StreamContent(object):
     def _send_stream(self, content):
         """stream content to nodes with stream enabled"""
         displays = self.lcd_repository.find({'can_stream': True})
+
         for display in displays:
-            display.stream(content)
+            # print(self.formatter.format(display.formatter, content))
+            display.stream(self.formatter.format(display.formatter, content))
 
     def _send_message_to_node(self, message):
         """send message to target node"""

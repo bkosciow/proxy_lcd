@@ -3,7 +3,7 @@
 
 __author__ = 'Bartosz Kościów'
 from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QCheckBox, \
-    QDialogButtonBox, QComboBox
+    QDialogButtonBox, QComboBox, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import Qt
 from charlcd.drivers.wifi_content import WiFi
 from charlcd.buffered import CharLCD
@@ -19,6 +19,7 @@ class DisplayForm(QDialog):
         self.broadcast_port = broadcast_port
         self.widgets = {}
         self.init_gui()
+
         self.setWindowTitle('Add display')
         self.display = display
         if display is not None:
@@ -32,34 +33,46 @@ class DisplayForm(QDialog):
         name_label = QLabel('Name')
         name = QLineEdit()
         layout.addWidget(name_label, 1, 0)
-        layout.addWidget(name, 1, 1)
+        layout.addWidget(name, 1, 1, 1, 2)
         self.widgets['name'] = name
 
         node_name_label = QLabel('Node name')
         node_name = QLineEdit()
         layout.addWidget(node_name_label, 2, 0)
-        layout.addWidget(node_name, 2, 1)
+        layout.addWidget(node_name, 2, 1, 1, 2)
         self.widgets['node_name'] = node_name
 
-        size_label = QLabel('Size')
-        size = QComboBox()
-        size.addItem('16x2')
-        size.addItem('20x4')
-        size.addItem('40x4')
+        size_label = QLabel('Size (w*h)')
+        size_x = QLineEdit()
+        size_y = QLineEdit()
+        size_x.setMaximumWidth(40)
+        size_y.setMaximumWidth(40)
         layout.addWidget(size_label, 3, 0)
-        layout.addWidget(size, 3, 1)
-        self.widgets['size'] = size
+        layout.addWidget(size_x, 3, 1)
+        layout.addWidget(size_y, 3, 2)
+        self.widgets['size'] = {
+            'x': size_x,
+            'y': size_y
+        }
 
         stream_label = QLabel('Stream')
         stream = QCheckBox()
         layout.addWidget(stream_label, 4, 0)
-        layout.addWidget(stream, 4, 1)
+        layout.addWidget(stream, 4, 1, 1, 2)
         self.widgets['stream'] = stream
+
+        formatter_label = QLabel('Formatter')
+        formatter = QComboBox()
+        # items = self.fo
+        # size.addItem('16x2')
+        # size.addItem('20x4')
+        # size.addItem('40x4')
+        layout.addWidget(formatter_label, 5, 0)
 
         buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
             Qt.Horizontal, self)
-        layout.addWidget(buttons)
+        layout.addWidget(buttons, 6, 0, 1, 3)
 
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
@@ -70,14 +83,18 @@ class DisplayForm(QDialog):
         self.widgets['name'].setText(display.name)
         self.widgets['stream'].setChecked(True if display.can_stream else False)
         size = display.get_size()
-        size = str(size[0]) + 'x' + str(size[1])
-        self.widgets['size'].setCurrentText(size)
+        self.widgets['size']['x'].setText(str(size[0]))
+        self.widgets['size']['y'].setText(str(size[1]))
 
     def get_display(self):
         """rturns Display object"""
         drv = WiFi(self.msg, [self.widgets['node_name'].text()], (self.broadcast_ip, self.broadcast_port))
-        width, height = (self.widgets['size'].currentText()).split("x")
-        lcd = CharLCD(int(width), int(height), drv)
+        lcd = CharLCD(
+            int(
+                self.widgets['size']['x'].text()),
+            int(
+                self.widgets['size']['y'].text()),
+            drv)
         lcd.init()
 
         return Display(
@@ -85,5 +102,7 @@ class DisplayForm(QDialog):
             self.widgets['name'].text(),
             lcd,
             self.widgets['stream'].isChecked(),
-            'charlcd'
+            'charlcd',
+            'clean'
         )
+

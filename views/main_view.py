@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QAction, qApp, QVBoxLayout, \
     QWidget, QTableWidget, QTableWidgetItem
 from views.display_form import DisplayForm
-
+import service.errors_print
 
 class MainView(QMainWindow):
     """Main window"""
@@ -130,22 +130,25 @@ class MainView(QMainWindow):
 
     def _edit_action(self):
         """edit action - launch form"""
-        indexes = self.widgets['table_widget'].selectionModel().selectedRows()
-        index = indexes[0]
-        item = self.widgets['table_widget'].item(index.row(), 0)
-        displays = self.lcd_repository.find({'name': item.text()})
-        dialog = DisplayForm(
-            self.lcd_repository.msg,
-            self.lcd_repository.broadcast_ip,
-            self.lcd_repository.broadcast_port,
-            displays[0]
-        )
-        result = dialog.exec_()
-        if result:
-            display = dialog.get_display()
-            self.lcd_repository.save_display(display)
-            self._init_content(self.widgets['hbox'])
+        try:
+            indexes = self.widgets['table_widget'].selectionModel().selectedRows()
+            index = indexes[0]
+            item = self.widgets['table_widget'].item(index.row(), 0)
+            displays = self.lcd_repository.find({'name': item.text()})
+            dialog = DisplayForm(
+                self.lcd_repository.msg,
+                self.lcd_repository.broadcast_ip,
+                self.lcd_repository.broadcast_port,
+                displays[0]
+            )
+            result = dialog.exec_()
+            if result:
+                display = dialog.get_display()
+                self.lcd_repository.save_display(display)
+                self._init_content(self.widgets['hbox'])
 
+        except:
+            service.errors_print.print_exception()
     def _select_row_action(self):
         """called on table click, if row then enable delete and edit"""
         self.widgets['delete_action'].setDisabled(True)

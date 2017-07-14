@@ -9,11 +9,21 @@ from PyQt5.QtCore import QCoreApplication
 from service.tcp_server import StreamServer
 from service.stream_content import StreamContent
 from repository.config import Config
+from service.formatter import Formatter
+from service.clean_formatter import CleanFormatter
+from service.simple_formatter import SimpleFormatter
 import getopt
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 CLI = False
+
+
+def initialize_formatter():
+    formatter = Formatter()
+    formatter.add(CleanFormatter())
+    formatter.add(SimpleFormatter())
+    return formatter
 
 
 def parse_argv():
@@ -50,7 +60,6 @@ def print_config(config):
 if __name__ == '__main__':
     parse_argv()
     config = Config()
-
     if CLI:
         print_config(config)
         app = QCoreApplication(sys.argv)
@@ -58,7 +67,7 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
 
     stream_server = StreamServer(('0.0.0.0', config.server_port))
-    stream_content = StreamContent(config)
+    stream_content = StreamContent(config, initialize_formatter())
 
     if not CLI:
         from views.main_view import MainView

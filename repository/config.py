@@ -56,7 +56,8 @@ class Config(object):
                 self.config.get(section, "name"),
                 lcd,
                 self.config.getboolean(section, "stream"),
-                self.config.get(section, "type")
+                self.config.get(section, "type"),
+                self.config.get(section, "formatter")
             )
         )
 
@@ -73,6 +74,7 @@ class Config(object):
         self.config.set(section, 'node_name', display.node_name)
         self.config.set(section, 'stream', '1' if display.can_stream else '0')
         self.config.set(section, 'type', display.type)
+        self.config.set(section, 'formatter', display.formatter)
         self.load_lcd()
         self.save_config()
 
