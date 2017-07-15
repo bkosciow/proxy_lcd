@@ -6,15 +6,17 @@ import json
 
 
 class StreamContent(object):
-    def __init__(self, lcd_repository):
+    def __init__(self, lcd_repository, formatter):
         self.lcd_repository = lcd_repository
+        self.formatter = formatter
         SIGNALS['stream'].state.connect(self.handle_stream)
 
     def handle_stream(self, content):
         """send content to display"""
         content = content.strip()
         message = self._decode(content)
-        if message and 'protocol' in message and message['protocol'] == 'proxylcd':
+        if message and 'protocol' in message \
+                and message['protocol'] == 'proxylcd':
             self._handle_command(message)
         else:
             self._send_stream(content)
@@ -33,8 +35,12 @@ class StreamContent(object):
     def _send_stream(self, content):
         """stream content to nodes with stream enabled"""
         displays = self.lcd_repository.find({'can_stream': True})
+
         for display in displays:
-            display.stream(content)
+            display.stream(
+                content,
+                self.formatter.formatters[display.formatter]
+            )
 
     def _send_message_to_node(self, message):
         """send message to target node"""
@@ -52,5 +58,3 @@ class StreamContent(object):
             for display in displays:
                 display.lcd.buffer_clear()
                 display.lcd.set_xy(0, 0)
-
-
