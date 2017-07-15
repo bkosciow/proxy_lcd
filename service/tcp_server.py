@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtNetwork import QTcpServer, QHostAddress, QTcpSocket, QAbstractSocket
+from PyQt5.QtNetwork import QTcpServer, QHostAddress, QTcpSocket, \
+    QAbstractSocket
 from PyQt5.QtCore import QThread
 from service.signals import SIGNALS
 

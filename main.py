@@ -47,7 +47,8 @@ def print_config(config):
     print("Broadcast IP: ", config.broadcast_ip)
     print("Broadcast port: ", config.broadcast_port)
     print("LCDs:")
-    print("{:<10} | {:<10} | {:<7} | {:<6} | {:<8}".format('Name', 'Node name', 'Size', 'Stream', 'Type'))
+    print("{:<10} | {:<10} | {:<7} | {:<6} | {:<8}".
+          format('Name', 'Node name', 'Size', 'Stream', 'Type'))
     for lcd in config.find_all():
         size = lcd.get_size()
         print("{:<10} | {:<10} | {:<7} | {:<6} | {:<8}".format(

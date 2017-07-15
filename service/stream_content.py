@@ -15,7 +15,8 @@ class StreamContent(object):
         """send content to display"""
         content = content.strip()
         message = self._decode(content)
-        if message and 'protocol' in message and message['protocol'] == 'proxylcd':
+        if message and 'protocol' in message \
+                and message['protocol'] == 'proxylcd':
             self._handle_command(message)
         else:
             self._send_stream(content)
@@ -57,5 +58,3 @@ class StreamContent(object):
             for display in displays:
                 display.lcd.buffer_clear()
                 display.lcd.set_xy(0, 0)
-
-

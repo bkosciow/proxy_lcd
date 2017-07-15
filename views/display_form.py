@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 __author__ = 'Bartosz Kościów'
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit, QCheckBox, \
-    QDialogButtonBox, QComboBox, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QLineEdit,\
+    QCheckBox, QDialogButtonBox, QComboBox
 from PyQt5.QtCore import Qt
 from charlcd.drivers.wifi_content import WiFi
 from charlcd.buffered import CharLCD
@@ -12,7 +12,8 @@ from PyQt5.QtGui import QIcon
 
 
 class DisplayForm(QDialog):
-    def __init__(self, msg, broadcast_ip, broadcast_port, formatters, display=None, parent=None):
+    def __init__(self, msg, broadcast_ip, broadcast_port,
+                 formatters, display=None, parent=None):
         super().__init__(parent)
         self.msg = msg
         self.broadcast_ip = broadcast_ip
@@ -81,7 +82,9 @@ class DisplayForm(QDialog):
         """fill form with data from Display"""
         self.widgets['node_name'].setText(display.node_name)
         self.widgets['name'].setText(display.name)
-        self.widgets['stream'].setChecked(True if display.can_stream else False)
+        self.widgets['stream'].setChecked(
+            True if display.can_stream else False
+        )
         size = display.get_size()
         self.widgets['size']['x'].setText(str(size[0]))
         self.widgets['size']['y'].setText(str(size[1]))
@@ -89,7 +92,11 @@ class DisplayForm(QDialog):
 
     def get_display(self):
         """returns Display object"""
-        drv = WiFi(self.msg, [self.widgets['node_name'].text()], (self.broadcast_ip, self.broadcast_port))
+        drv = WiFi(
+            self.msg,
+            [self.widgets['node_name'].text()],
+            (self.broadcast_ip, self.broadcast_port)
+        )
         lcd = CharLCD(
             int(
                 self.widgets['size']['x'].text()),
@@ -106,4 +113,3 @@ class DisplayForm(QDialog):
             'charlcd',
             self.widgets['formatter'].currentText()
         )
-

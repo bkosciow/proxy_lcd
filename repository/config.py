@@ -46,7 +46,11 @@ class Config(object):
 
     def create_display(self, section):
         """create Display from cfg section"""
-        drv = WiFi(self.msg, [self.config.get(section, "node_name")], (self.broadcast_ip, self.broadcast_port))
+        drv = WiFi(
+            self.msg,
+            [self.config.get(section, "node_name")],
+            (self.broadcast_ip, self.broadcast_port)
+        )
         width, height = (self.config.get(section, "size")).split("x")
         lcd = CharLCD(int(width), int(height), drv)
         lcd.init()
@@ -87,7 +91,8 @@ class Config(object):
 
     def _find_section_by_name(self, name):
         for section in self.config.sections():
-            if section is not None and section[0:3] == "lcd" and self.config.get(section, 'name') == name:
+            if section is not None and section[0:3] == "lcd" \
+                    and self.config.get(section, 'name') == name:
                 return section
         return None
 
@@ -112,9 +117,13 @@ class Config(object):
             results = (i for i in results if i.name == filters['name'])
 
         if 'node_name' in filters:
-            results = (i for i in results if i.node_name == filters['node_name'])
+            results = (
+                i for i in results if i.node_name == filters['node_name']
+            )
 
         if 'can_stream' in filters:
-            results = (i for i in results if i.can_stream == filters['can_stream'])
+            results = (
+                i for i in results if i.can_stream == filters['can_stream']
+            )
 
         return list(results)

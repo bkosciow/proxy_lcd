@@ -4,10 +4,11 @@
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QMainWindow, QAction, qApp, QVBoxLayout, \
-    QWidget, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QMainWindow, QAction, qApp, \
+    QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem
 from views.display_form import DisplayForm
 import service.errors_print
+
 
 class MainView(QMainWindow):
     """Main window"""
@@ -22,7 +23,6 @@ class MainView(QMainWindow):
         self._init_menu()
         self._init_gui()
         self._init_content(self.widgets['hbox'])
-
 
     def _init_gui(self):
         """prepare main widget and attach layout"""
@@ -71,7 +71,6 @@ class MainView(QMainWindow):
         toolbar.addSeparator()
         toolbar.addAction(delete_action)
 
-
     def _init_content(self, widget):
         """loads table with displays"""
         displays = self.lcd_repository.find()
@@ -82,7 +81,9 @@ class MainView(QMainWindow):
         table_widget.setColumnCount(5)
         table_widget.setRowCount(len(displays))
         table_widget.itemSelectionChanged.connect(self._select_row_action)
-        table_widget.setHorizontalHeaderLabels(["Name", "Node name", "Size", "Stream", "Formatter"])
+        table_widget.setHorizontalHeaderLabels(
+            ["Name", "Node name", "Size", "Stream", "Formatter"]
+        )
         row = 0
         for display in self.lcd_repository.find():
             item = QTableWidgetItem(display.name)
@@ -93,7 +94,9 @@ class MainView(QMainWindow):
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             table_widget.setItem(row, 1, item)
 
-            item = QTableWidgetItem(str(display.get_size()[0]) + "x" + str(display.get_size()[1]))
+            item = QTableWidgetItem(
+                str(display.get_size()[0]) + "x" + str(display.get_size()[1])
+            )
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             table_widget.setItem(row, 2, item)
 
@@ -138,7 +141,8 @@ class MainView(QMainWindow):
     def _edit_action(self):
         """edit action - launch form"""
         try:
-            indexes = self.widgets['table_widget'].selectionModel().selectedRows()
+            indexes = self.widgets['table_widget']\
+                .selectionModel().selectedRows()
             index = indexes[0]
             item = self.widgets['table_widget'].item(index.row(), 0)
             displays = self.lcd_repository.find({'name': item.text()})
@@ -168,7 +172,9 @@ class MainView(QMainWindow):
 
     def _closeEvent(self, event):
         """Called on close window"""
-        reply = QMessageBox.question(self, 'Message', 'Are you sure?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.question(
+            self, 'Message', 'Are you sure?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+        )
         if reply == QMessageBox.Yes:
             event.accept()
         else:

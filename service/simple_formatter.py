@@ -19,7 +19,8 @@ class SimpleFormatter(Formatter):
                 chunks = math.ceil(len(line)/display.lcd.get_width())
                 for chunk in range(chunks):
                     subline = line[
-                        chunk*display.lcd.get_width():chunk*display.lcd.get_width()+display.lcd.get_width()
+                        chunk*display.lcd.get_width():
+                        chunk*display.lcd.get_width()+display.lcd.get_width()
                     ]
                     lines.append(subline.ljust(display.lcd.get_width()))
 
@@ -28,4 +29,3 @@ class SimpleFormatter(Formatter):
     def get_name(self):
         """formatter name"""
         return "simple"
-
