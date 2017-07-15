@@ -12,12 +12,13 @@ from PyQt5.QtGui import QIcon
 
 
 class DisplayForm(QDialog):
-    def __init__(self, msg, broadcast_ip, broadcast_port, display=None, parent=None):
+    def __init__(self, msg, broadcast_ip, broadcast_port, formatters, display=None, parent=None):
         super().__init__(parent)
         self.msg = msg
         self.broadcast_ip = broadcast_ip
         self.broadcast_port = broadcast_port
         self.widgets = {}
+        self.formatters = formatters
         self.init_gui()
 
         self.setWindowTitle('Add display')
@@ -63,11 +64,10 @@ class DisplayForm(QDialog):
 
         formatter_label = QLabel('Formatter')
         formatter = QComboBox()
-        # items = self.fo
-        # size.addItem('16x2')
-        # size.addItem('20x4')
-        # size.addItem('40x4')
+        formatter.addItems(self.formatters.get_names())
         layout.addWidget(formatter_label, 5, 0)
+        layout.addWidget(formatter, 5, 1, 1, 2)
+        self.widgets['formatter'] = formatter
 
         buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
@@ -85,9 +85,10 @@ class DisplayForm(QDialog):
         size = display.get_size()
         self.widgets['size']['x'].setText(str(size[0]))
         self.widgets['size']['y'].setText(str(size[1]))
+        self.widgets['formatter'].setCurrentText(display.formatter)
 
     def get_display(self):
-        """rturns Display object"""
+        """returns Display object"""
         drv = WiFi(self.msg, [self.widgets['node_name'].text()], (self.broadcast_ip, self.broadcast_port))
         lcd = CharLCD(
             int(
@@ -103,6 +104,6 @@ class DisplayForm(QDialog):
             lcd,
             self.widgets['stream'].isChecked(),
             'charlcd',
-            'clean'
+            self.widgets['formatter'].currentText()
         )
 

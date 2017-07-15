@@ -5,7 +5,7 @@ import re
 
 
 class CleanFormatter(Formatter):
-    def format(self, content):
+    def format(self, content, display):
         """return formatted content"""
         pattern = re.compile(r'\s+')
         return pattern.sub(' ', content)

@@ -5,8 +5,10 @@ from abstract.formatter import Formatter
 
 class SimpleFormatter(Formatter):
 
-    def format(self, content):
+    def format(self, content, display):
         """return formatted content"""
+        lines = content.splitlines()
+        print(lines)
         # row = ""
         # print("---")
         # for letter in content:

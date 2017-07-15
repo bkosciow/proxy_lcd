@@ -11,16 +11,18 @@ import service.errors_print
 
 class MainView(QMainWindow):
     """Main window"""
-    def __init__(self, lcd_repository):
+    def __init__(self, lcd_repository, formatters):
         super().__init__()
         self.lcd_repository = lcd_repository
         self.widgets = {
             'table_widget': None
         }
         self.table_widget = None
+        self.formatters = formatters
         self._init_menu()
         self._init_gui()
         self._init_content(self.widgets['hbox'])
+
 
     def _init_gui(self):
         """prepare main widget and attach layout"""
@@ -77,10 +79,10 @@ class MainView(QMainWindow):
             widget.removeWidget(self.widgets['table_widget'])
         table_widget = QTableWidget()
         table_widget.setColumnCount(0)
-        table_widget.setColumnCount(4)
+        table_widget.setColumnCount(5)
         table_widget.setRowCount(len(displays))
         table_widget.itemSelectionChanged.connect(self._select_row_action)
-        table_widget.setHorizontalHeaderLabels(["Name", "Node name", "Size", "Stream"])
+        table_widget.setHorizontalHeaderLabels(["Name", "Node name", "Size", "Stream", "Formatter"])
         row = 0
         for display in self.lcd_repository.find():
             item = QTableWidgetItem(display.name)
@@ -99,6 +101,10 @@ class MainView(QMainWindow):
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             table_widget.setItem(row, 3, item)
 
+            item = QTableWidgetItem(display.formatter)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            table_widget.setItem(row, 4, item)
+
             row += 1
 
         table_widget.resizeRowsToContents()
@@ -112,7 +118,8 @@ class MainView(QMainWindow):
         dialog = DisplayForm(
             self.lcd_repository.msg,
             self.lcd_repository.broadcast_ip,
-            self.lcd_repository.broadcast_port
+            self.lcd_repository.broadcast_port,
+            self.formatters
         )
         result = dialog.exec_()
         if result:
@@ -139,6 +146,7 @@ class MainView(QMainWindow):
                 self.lcd_repository.msg,
                 self.lcd_repository.broadcast_ip,
                 self.lcd_repository.broadcast_port,
+                self.formatters,
                 displays[0]
             )
             result = dialog.exec_()
@@ -146,9 +154,9 @@ class MainView(QMainWindow):
                 display = dialog.get_display()
                 self.lcd_repository.save_display(display)
                 self._init_content(self.widgets['hbox'])
-
         except:
             service.errors_print.print_exception()
+
     def _select_row_action(self):
         """called on table click, if row then enable delete and edit"""
         self.widgets['delete_action'].setDisabled(True)

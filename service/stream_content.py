@@ -36,8 +36,10 @@ class StreamContent(object):
         displays = self.lcd_repository.find({'can_stream': True})
 
         for display in displays:
-            # print(self.formatter.format(display.formatter, content))
-            display.stream(self.formatter.format(display.formatter, content))
+            display.stream(
+                content,
+                self.formatter.formatters[display.formatter]
+            )
 
     def _send_message_to_node(self, message):
         """send message to target node"""

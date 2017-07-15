@@ -17,7 +17,9 @@ class Display(object):
         """gets lcd size"""
         return self.lcd.get_width(), self.lcd.get_height()
 
-    def stream(self, content):
+    def stream(self, content, formatter=None):
         """send data to lcd"""
+        if formatter is not None:
+            content = formatter.format(content, self)
         self.lcd.stream(content)
         self.lcd.flush()

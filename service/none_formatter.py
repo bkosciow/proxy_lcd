@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import abc
+from abstract.formatter import Formatter
 
 
-class Formatter(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
+class NoneFormatter(Formatter):
+
     def format(self, content, display):
         """return formatted content"""
-        pass
+        return content
 
-    @abc.abstractmethod
     def get_name(self):
         """formatter name"""
-        pass
+        return "none"
