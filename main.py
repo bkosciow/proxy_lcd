@@ -9,7 +9,7 @@ from PyQt5.QtCore import QCoreApplication
 from service.tcp_server import StreamServer
 from service.stream_content import StreamContent
 from repository.config import Config
-from service.formatter import Formatter
+from service.format import Formatter
 from service.clean_formatter import CleanFormatter
 from service.simple_formatter import SimpleFormatter
 from service.none_formatter import NoneFormatter
